@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Slides</title>
+</head>
+<body>
+	<script src="libs/jquery-1.9.1.min.js"></script>
+	<script>
+
+		var data = window.location.search;
+
+		var len = data.match(/\/[0-9]+/)[0];
+		len = len.replace('/','');
+
+		var src = data.match(/\?.+\//)[0]
+		src = src.replace('?','');
+
+		var count = 1;
+
+
+
+		var img = $('<img src="'+src+'/幻灯片1.png" alt="" />').appendTo('body');
+
+		img.on('click', function() {
+			if(count < len){
+				count++;
+				img.attr('src',src+'/幻灯片'+count+'.png');
+			}else{
+				img.attr('src',src+'/幻灯片1.png');
+				count = 1;
+			}
+		})
+	</script>
+
+</body>
+</html>

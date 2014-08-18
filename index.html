@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Slides</title>
+</head>
+<body>
+
+	<script src="libs/jquery-1.9.1.min.js"></script>
+	<script src="src.js"></script>
+	<script>
+		var config = [
+			{
+				title: 'unit-testing-reseach',
+				url: 'slides/20140701unit-testing-reseach',
+				date: '20140701',
+				total: 23
+			},
+			{
+				title: 'unit-testing-setup',
+				url: 'slides/20140811unit-testing-setup',
+				date: '20140811',
+				total: 26
+			}
+		];
+
+		var slides = new Slides();
+		var item = slides.buildOutline(config);
+		item.appendTo('body');
+
+
+
+	</script>
+
+
+</body>
+</html>
