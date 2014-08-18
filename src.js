@@ -7,10 +7,17 @@ window.Outline = function(){
 Outline.prototype = {
 	$el: null,
 	buildOutline: function(data){
-		this.$el = $('<ul></ul>');
+		this.$el = $([
+			'<div class="SlidesOutline">',
+				'<div class="SlidesOutlineTitle">Outline</div>',
+				'<ul></ul>',
+			'</div>'
+		].join(''));
+
 		for (var i = 0; i < data.length; i++) {
-			this.$el.append(this.buildItem(data[i]));
+			this.$el.find('ul').append(this.buildItem(data[i]));
 		}
+
 		return this.$el;
 	},
 	buildItem: function(data, i){
@@ -19,54 +26,96 @@ Outline.prototype = {
 }
 
 window.Slides = function(config){
-	this.config = $.extend({
-		count: 1
-	}, config);
+	this.config = config;
 
 	this.bindEvent();
-
 }
 Slides.prototype = {
 	$count: 1,
-	$img: null,
 	bindEvent: function(){
-		$('body').delegate('img', 'click', this.eventImage);
+		$('body').delegate('img', 'click', this, this.eventImage);
 		$('body').on('keydown', this, this.eventImage)
+		// $('body').delegate('input[type="button"]','click', this, this.eventButtonClick);
 	},
-	buildImg: function(uri, hash){
-		var img = this.$img = $('<img src="slides/'+uri+'/幻灯片'+hash+'.png" alt="" />');
+	build: function(data){
+		var wrap = $('<div class="SlidesContent"></div>');
+		this.buildImg(data.hash, data.uri).appendTo(wrap);
+		this.buildFooter(data.hash, data.total).appendTo(wrap);
+		return wrap;
+	},
+	buildFooter:function(page, total){
+		var layout = $([
+			'<div class="fr">',
+				'<input type="button" class="btn btn-default mr10 previous" value="previous"/>',
+				'<span>'+page+'</span>',
+				'<input type="button" class="btn btn-default ml10 mr10 next" value="next"/>',
+				'<span>Total:'+total+'</span>',
+				'<input type="button" class="btn btn-default ml10 back" value="back"/>',
+			'</div>'
+		].join(''));
 
-		var c = this.config;
-		c.count = hash;
+		layout.find('input[type="button"]').on('click', this, this.eventButtonClick);
+		return layout;
+	},
+	eventButtonClick: function(ev){
+		console.log('ds')
+		var self = ev.data;
+		var type = $(this).val();
+		switch (type){
+			case 'previous':
+				self.previous();
+			break;
+			case 'next':
+				self.next();
+			break;
+			case 'back':
+				self.back();
+			break;
+		}
+		return false;
+	},
+	next: function(){
+		var total = this.config.total;
+		this.$count = (this.$count < total) ? this.$count+1 : 1;
+		window.location.hash = '#'+this.$count;
+	},
+	previous: function(){
+		var total = this.config.total;
+		this.$count--;
+		this.$count = (this.$count <= 0) ? total : this.$count;
+		window.location.hash = '#'+this.$count;
+	},
+	back: function(){
+		window.location.href = window.location.href.replace(/content.+/, 'index.html');
+	},
+	buildImg: function(hash, uri){
+		var img = $('<img src="slides/'+uri+'/幻灯片'+hash+'.png" alt="" />');
+
+		this.$count = +hash;
 
 		return img;
 	},
 	eventImage: function(ev){
 		var self = ev.data;
-		var c = self.config;
+		var total = self.config.total;
 
 		switch (ev.keyCode){
 			case 32: // space
 			case 39: // right
 			case 40: // down
 			case undefined:
-				if(c.count < c.total){
-					c.count++;
-				}else{
-					c.count = 1;
-				}
+				// self.count = (self.count < total) ? self.count+1 : 1;
+				self.next();
 			break;
 			case 37: // left
 			case 38: // up
-				c.count--;
-				if(c.count > 0){
-				}else{
-					c.count = c.total;
-				}
+				// self.count--;
+				// self.count = (self.count <= 0) ? total : self.count;
+				self.previous();
 			break;
 		}
 
-		window.location.hash = '#'+c.count;
+		// window.location.hash = '#'+self.count;
 
 		return false;
 	}
@@ -87,8 +136,8 @@ window.util = {
 		uri = uri.replace('/','');
 
 		return {
-			hash: hash,
-			total: total,
+			hash: +hash,
+			total: +total,
 			uri: uri
 		}
 

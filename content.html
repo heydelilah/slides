@@ -3,8 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Slides</title>
+	<link rel="stylesheet" href="style/main.css">
 </head>
-<body>
+<body class="Slides">
 	<script src="libs/jquery-1.9.1.min.js"></script>
 	<script src="src.js"></script>
 	<script>
@@ -12,8 +13,10 @@
 			var info = util.getLocationInfo();
 
 			$('body').html('');
-			var img = slides.buildImg(info.uri, info.hash)
-			img.appendTo('body');
+			// var img = slides.buildImg(info.uri, info.hash)
+			// img.appendTo('body');
+
+			slides.build(info).appendTo('body');
 
 		});
 
@@ -28,8 +31,13 @@
 			src: info.uri
 		});
 
-		var img = slides.buildImg(info.uri, info.hash);
-		img.appendTo('body');
+		slides.build(info).appendTo('body');
+
+		// var img = slides.buildImg(iinfo.hash, info.uri, );
+		// img.appendTo('body');
+
+		// slides.buildController(info.hash, info.total).appendTo('body');
+
 
 	</script>
 

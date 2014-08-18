@@ -1,0 +1,73 @@
+.Slides {
+  font-family: Georgia;
+}
+.SlidesContent {
+  margin: 10px auto;
+  width: 960px;
+}
+.SlidesOutlineTitle {
+  font-size: 24px;
+  color: #428BCA;
+}
+.SlidesOutline ul {
+  list-style-type: none;
+  padding: 0px;
+}
+.SlidesOutline ul li {
+  font-size: 18px;
+  padding: 6px 0;
+}
+.SlidesOutline ul li a {
+  text-decoration: none;
+  color: #428BCA;
+}
+.SlidesOutline ul li a:hover {
+  color: #5BC0DE;
+}
+.ml10 {
+  margin-left: 10px;
+}
+.mr10 {
+  margin-right: 10px;
+}
+.mt10 {
+  margin-top: 10px;
+}
+.mb10 {
+  margin-bottom: 10px;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.cr {
+  clear: right;
+}
+/** ----- Bootstrap ----- **/
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 4px;
+}
+.btn-default {
+  color: #333;
+  background-color: #FFF;
+  border-color: #CCC;
+}
+/** ----- Bootstrap ----- **/
