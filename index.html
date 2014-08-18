@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Slides</title>
+	<title>Outline</title>
 </head>
 <body>
 
@@ -12,20 +12,20 @@
 		var config = [
 			{
 				title: 'unit-testing-reseach',
-				url: 'slides/20140701unit-testing-reseach',
+				url: '20140701unit-testing-reseach',
 				date: '20140701',
 				total: 23
 			},
 			{
 				title: 'unit-testing-setup',
-				url: 'slides/20140811unit-testing-setup',
+				url: '20140811unit-testing-setup',
 				date: '20140811',
 				total: 26
 			}
 		];
 
-		var slides = new Slides();
-		var item = slides.buildOutline(config);
+		var outline = new Outline();
+		var item = outline.buildOutline(config);
 		item.appendTo('body');
 
 
