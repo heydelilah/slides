@@ -8,9 +8,9 @@
 <body class="Slides">
 
 	<script src="libs/jquery-1.9.1.min.js"></script>
-	<script src="src.js"></script>
+	<script src="slides.js"></script>
 	<script>
-		var config = [
+		var data = [
 			{
 				title: 'unit-testing-reseach',
 				url: '20140701unit-testing-reseach',
@@ -25,10 +25,10 @@
 			}
 		];
 
-		var outline = new Outline();
-		var item = outline.buildOutline(config);
-		item.appendTo('body');
-
+		var outline = new Outline({
+			data: data,
+			target: $('body')
+		});
 
 	</script>
 

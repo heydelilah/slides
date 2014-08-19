@@ -1,24 +1,31 @@
+window.Outline = function(config){
+	this.config = $.extend({
+		data: null,
+		target: null
+	}, config);
 
-
-window.Outline = function(){
-
+	this.buildOutline();
 }
 
 Outline.prototype = {
 	$el: null,
-	buildOutline: function(data){
+	buildOutline: function(){
+		var c = this.config;
+
 		this.$el = $([
 			'<div class="SlidesOutline">',
-				'<div class="SlidesOutlineTitle">Outline</div>',
+				'<div class="SlidesOutlineTitle">Catalogue</div>',
 				'<ul></ul>',
 			'</div>'
 		].join(''));
 
-		for (var i = 0; i < data.length; i++) {
-			this.$el.find('ul').append(this.buildItem(data[i]));
+		for (var i = 0; i < c.data.length; i++) {
+			this.$el.find('ul').append(this.buildItem(c.data[i]));
 		}
 
-		return this.$el;
+		if(c.target){
+			this.$el.appendTo(c.target);
+		}
 	},
 	buildItem: function(data, i){
 		return '<li><a href="content.html?'+data.url+'/'+data.total+'#1">'+data.date+'-'+data.title+'</a></li>';
@@ -26,30 +33,48 @@ Outline.prototype = {
 }
 
 window.Slides = function(config){
-	this.config = config;
+	this.config = $.extend({
+		total: 0,
+		uri: '',
+		hash: 0,
+		target: $('body')
+	}, config);
 
 	this.bindEvent();
+	this.build();
 }
 Slides.prototype = {
 	$count: 1,
+	$el: null,
+	$footer: null,
+	$img: null,
 	bindEvent: function(){
-		$('body').delegate('img', 'click', this, this.eventImage);
-		$('body').on('keydown', this, this.eventImage)
+		$('body').delegate('img', 'click', this, this.eventChangeSlides);
+		$('body').on('keydown', this, this.eventChangeSlides)
 		// $('body').delegate('input[type="button"]','click', this, this.eventButtonClick);
 	},
-	build: function(data){
-		var wrap = $('<div class="SlidesContent"></div>');
-		this.buildImg(data.hash, data.uri).appendTo(wrap);
-		this.buildFooter(data.hash, data.total).appendTo(wrap);
-		return wrap;
+	build: function(){
+		var c = this.config;
+
+		this.$el = $('<div class="SlidesContent"></div>');
+		this.buildImg(c.hash, c.uri).appendTo(this.$el);
+		this.buildFooter(c.hash, c.total).appendTo(this.$el);
+		this.$el.appendTo(c.target);
+	},
+	buildImg: function(hash, uri){
+		this.$img = $('<img src="slides/'+uri+'/幻灯片'+hash+'.png" alt="" />');
+
+		this.$count = +hash;
+
+		return this.$img;
 	},
 	buildFooter:function(page, total){
-		var layout = $([
+		var layout = this.$footer = $([
 			'<div class="fr">',
 				'<input type="button" class="btn btn-default mr10 previous" value="previous"/>',
-				'<span>'+page+'</span>',
+				'<span class="page">'+page+'</span>',
 				'<input type="button" class="btn btn-default ml10 mr10 next" value="next"/>',
-				'<span>Total:'+total+'</span>',
+				'<span class="total">Total:'+total+'</span>',
 				'<input type="button" class="btn btn-default ml10 back" value="back"/>',
 			'</div>'
 		].join(''));
@@ -58,7 +83,6 @@ Slides.prototype = {
 		return layout;
 	},
 	eventButtonClick: function(ev){
-		console.log('ds')
 		var self = ev.data;
 		var type = $(this).val();
 		switch (type){
@@ -74,6 +98,12 @@ Slides.prototype = {
 		}
 		return false;
 	},
+	update: function(config){
+		var c = this.config = $.extend(this.config, config);
+		this.$img.attr('src','slides/'+c.uri+'/幻灯片'+c.hash+'.png');
+		this.$footer.find('.page').val(c.hash);
+		this.$footer.find('.total').val(c.total);
+	},
 	next: function(){
 		var total = this.config.total;
 		this.$count = (this.$count < total) ? this.$count+1 : 1;
@@ -88,35 +118,21 @@ Slides.prototype = {
 	back: function(){
 		window.location.href = window.location.href.replace(/content.+/, 'index.html');
 	},
-	buildImg: function(hash, uri){
-		var img = $('<img src="slides/'+uri+'/幻灯片'+hash+'.png" alt="" />');
-
-		this.$count = +hash;
-
-		return img;
-	},
-	eventImage: function(ev){
+	eventChangeSlides: function(ev){
 		var self = ev.data;
-		var total = self.config.total;
 
 		switch (ev.keyCode){
 			case 32: // space
 			case 39: // right
 			case 40: // down
 			case undefined:
-				// self.count = (self.count < total) ? self.count+1 : 1;
 				self.next();
 			break;
 			case 37: // left
 			case 38: // up
-				// self.count--;
-				// self.count = (self.count <= 0) ? total : self.count;
 				self.previous();
 			break;
 		}
-
-		// window.location.hash = '#'+self.count;
-
 		return false;
 	}
 }
@@ -126,21 +142,15 @@ window.util = {
 		var hash = window.location.hash;
 		hash = hash.replace('#','');
 
-		var data = window.location.search;
-
-		var total = data.match(/\/[0-9]+/)[0];
-		total = total.replace('/','');
-
-		var uri = data.match(/\?.+\//)[0]
-		uri = uri.replace('?','');
-		uri = uri.replace('/','');
+		var url = window.location.search;
+		var total = url.match(/\/([0-9]+)/)[1];
+		var path = url.match(/\?(.+)\//)[1];
 
 		return {
 			hash: +hash,
 			total: +total,
-			uri: uri
+			uri: path
 		}
-
 	}
 }
 
