@@ -134,6 +134,9 @@ Slides.prototype = {
 			break;
 		}
 		return false;
+	},
+	getContainer: function(){
+		return this.$el;
 	}
 }
 
